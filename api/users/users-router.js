@@ -1,10 +1,16 @@
 const router = require('express').Router();
 
 const Users = require('./users-model');
+const { loggedIn } = require('../middleware/middleware');
 
-router.post('/', (req, res) => {
-// 	If the user is logged in, respond with an array of all the users contained in the database. 
-// If the user is not logged in respond with the correct status code and the message: 'You shall not pass!'.
+router.get('/', loggedIn, (req, res) => {
+  Users.getAll()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch (err => {
+      res.status(400).json({ message: err.message });
+    });
 });
 
 module.exports = router;
